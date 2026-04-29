@@ -35,20 +35,51 @@ ground = cmds.polyPlane(name="ground", width=60, height=60,
                         subdivisionsX=1, subdivisionsY=1)[0]
 
 # ---------------------------------------------------------------------------
-# TODO: Build your scene below by calling functions from scene_functions.
-#
-# Example calls (uncomment and modify once your functions are implemented):
-#
-#   sf.create_building(width=5, height=10, depth=5, position=(-10, 0, 8))
-#   sf.create_tree(position=(3, 0, -5))
-#   sf.create_fence(length=12, post_count=7, position=(-6, 0, -3))
-#   sf.create_lamp_post(position=(8, 0, 2))
-#
-#   # Place 8 trees in a circle of radius 15:
-#   sf.place_in_circle(sf.create_tree, count=8, radius=15)
-#
-# Remember: call each function at least once, and aim for 15+ objects.
+# Scene Building
 # ---------------------------------------------------------------------------
+
+# -------------------------
+# Create buildings (city area)
+# -------------------------
+# These are the main structures of the scene.
+sf.create_building(width=6, height=10, depth=6, position=(-15, 0, 10))
+sf.create_building(width=5, height=8, depth=5, position=(0, 0, 10))
+sf.create_building(width=7, height=12, depth=6, position=(15, 0, 10))
+
+# -------------------------
+# Create trees (environment detail)
+# -------------------------
+# Scattered trees around the scene for natural environment feel.
+sf.create_tree(position=(-20, 0, -5))
+sf.create_tree(position=(-10, 0, -8))
+sf.create_tree(position=(10, 0, -7))
+
+# -------------------------
+# Create fence (structure divider)
+# -------------------------
+# Fence separates part of the scene like a park boundary.
+sf.create_fence(length=15, post_count=8, position=(-7, 0, 0))
+
+# -------------------------
+# Create lamp posts (lighting elements)
+# -------------------------
+# Adds street lighting to the environment.
+sf.create_lamp_post(position=(5, 0, 0))
+sf.create_lamp_post(position=(10, 0, 0))
+sf.create_lamp_post(position=(15, 0, 0))
+
+# -------------------------
+# Circular tree arrangement (park area)
+# -------------------------
+# Uses place_in_circle to generate repeated objects automatically.
+sf.place_in_circle(
+    sf.create_tree,
+    count=8,
+    radius=12,
+    center=(0, 0, -10),
+    trunk_height=4,
+    canopy_radius=2
+)
 
 
 # ---------------------------------------------------------------------------

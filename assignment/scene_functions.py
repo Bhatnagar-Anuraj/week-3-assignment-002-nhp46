@@ -41,12 +41,16 @@ def create_building(width=4, height=8, depth=4, position=(0, 0, 0)):
     Returns:
         str: The name of the created building transform node.
     """
-    # TODO: Implement this function.
-    #   1. Create a polyCube with the given width, height, and depth.
-    #   2. Move it so its base sits on the ground at 'position'.
-    #      Hint: offset Y by height / 2.0.
-    #   3. Return the object name.
-    pass
+    building = cmds.polyCube(w=width, h=height, d=depth)[0]
+
+    cmds.move(
+        position[0],
+        position[1] + height / 2.0,
+        position[2],
+        building
+    )
+
+    return building
 
 
 def create_tree(trunk_radius=0.3, trunk_height=3, canopy_radius=2,
@@ -62,13 +66,17 @@ def create_tree(trunk_radius=0.3, trunk_height=3, canopy_radius=2,
     Returns:
         str: The name of a group node containing the trunk and canopy.
     """
-    # TODO: Implement this function.
-    #   1. Create a polyCylinder for the trunk and position it.
-    #   2. Create a polySphere for the canopy, positioned on top of the trunk.
-    #   3. Group trunk and canopy together using cmds.group().
-    #   4. Move the group to 'position'.
-    #   5. Return the group name.
-    pass
+    trunk = cmds.polyCylinder(r=trunk_radius, h=trunk_height)[0]
+    cmds.move(0, trunk_height / 2.0, 0, trunk)
+
+    canopy = cmds.polySphere(r=canopy_radius)[0]
+    cmds.move(0, trunk_height + canopy_radius, 0, canopy)
+
+    tree = cmds.group(trunk, canopy)
+
+    cmds.move(position[0], position[1], position[2], tree)
+
+    return tree
 
 
 def create_fence(length=10, height=1.5, post_count=6, position=(0, 0, 0)):
@@ -85,13 +93,24 @@ def create_fence(length=10, height=1.5, post_count=6, position=(0, 0, 0)):
     Returns:
         str: The name of a group node containing all fence parts.
     """
-    # TODO: Implement this function.
-    #   1. Calculate spacing between posts: length / (post_count - 1).
-    #   2. Loop to create 'post_count' thin, tall cubes as posts.
-    #   3. Create a long, thin cube as a horizontal rail connecting them.
-    #   4. Group everything and move to 'position'.
-    #   5. Return the group name.
-    pass
+    parts = []
+
+    spacing = length / (post_count - 1)
+
+    for i in range(post_count):
+        post = cmds.polyCube(w=0.2, h=height, d=0.2)[0]
+        cmds.move(i * spacing, height / 2.0, 0, post)
+        parts.append(post)
+
+    rail = cmds.polyCube(w=length, h=0.2, d=0.2)[0]
+    cmds.move(length / 2.0, height * 0.7, 0, rail)
+    parts.append(rail)
+
+    fence = cmds.group(parts)
+
+    cmds.move(position[0], position[1], position[2], fence)
+
+    return fence
 
 
 def create_lamp_post(pole_height=5, light_radius=0.5, position=(0, 0, 0)):
@@ -105,11 +124,17 @@ def create_lamp_post(pole_height=5, light_radius=0.5, position=(0, 0, 0)):
     Returns:
         str: The name of a group node containing the pole and light.
     """
-    # TODO: Implement this function.
-    #   1. Create a thin polyCylinder for the pole.
-    #   2. Create a polySphere for the light, placed at the top of the pole.
-    #   3. Group them, move to 'position', and return the group name.
-    pass
+    pole = cmds.polyCylinder(r=0.15, h=pole_height)[0]
+    cmds.move(0, pole_height / 2.0, 0, pole)
+
+    light = cmds.polySphere(r=light_radius)[0]
+    cmds.move(0, pole_height + light_radius, 0, light)
+
+    lamp = cmds.group(pole, light)
+
+    cmds.move(position[0], position[1], position[2], lamp)
+
+    return lamp
 
 
 def place_in_circle(create_func, count=8, radius=10, center=(0, 0, 0),
@@ -132,13 +157,21 @@ def place_in_circle(create_func, count=8, radius=10, center=(0, 0, 0),
     Returns:
         list: A list of object/group names created by create_func.
     """
-    # TODO: Implement this function.
-    #   1. Import the math module (at the top of the file or here).
-    #   2. Loop 'count' times. For each iteration:
-    #       a. Calculate the angle: angle = 2 * math.pi * i / count
-    #       b. Calculate x = center[0] + radius * math.cos(angle)
-    #       c. Calculate z = center[2] + radius * math.sin(angle)
-    #       d. Call create_func(position=(x, center[1], z), **kwargs)
-    #       e. Append the returned name to a results list.
-    #   3. Return the results list.
-    pass
+    results = []
+
+    cmds.select(clear=True)
+    
+    for i in range(count):
+        angle = 2 * math.pi * i / count
+
+        x = center[0] + radius * math.cos(angle)
+        z = center[2] + radius * math.sin(angle)
+
+        obj = create_func(
+            position=(x, center[1], z),
+            **kwargs
+        )
+
+        results.append(obj)
+
+    return results
